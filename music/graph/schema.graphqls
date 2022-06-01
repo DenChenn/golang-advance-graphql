@@ -1,0 +1,23 @@
+type Music @key(fields: "id"){
+  id: String!
+  author: Author!
+  name: String!
+  length: String!
+}
+
+# Since one diary can have multiple music, and one music can be linked to multiple diaries, we create a weak entity
+# between them.
+type DiaryMusicLink {
+  music_id: String!
+  diary_id: String!
+}
+
+extend type Diary @key(fields: "id") {
+  id: String! @external
+  # To resolve this music field, we need diary id first
+  musics: [Music] @requires(fields: "id")
+}
+
+extend type Author @key(fields: "id") {
+  id: String! @external
+}

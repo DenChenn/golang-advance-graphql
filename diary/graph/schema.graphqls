@@ -1,0 +1,18 @@
+extend type Query {
+  diary(diary_id: String!): Diary
+}
+
+type Diary @key(fields: "id"){
+  id: String!
+  # If client only need author's name, I can do it without calling author's subgraph !
+  author: Author! @provides(fields: "name")
+  content: String!
+}
+
+extend type Author @key(fields: "id") {
+  id: String! @external
+  name: String! @external
+  # To resolve this diaries field, we need to get author id from outer service first !
+  diaries: [Diary]! @requires(fields: "id")
+  number_of_diaries: Int! @requires(fields: "id")
+}
